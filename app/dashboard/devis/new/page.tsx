@@ -1,29 +1,30 @@
-// app/dashboard/formations/create/page.tsx - VERSION AMÉLIORÉE
+// app/dashboard/devis/new/page.tsx
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Send, Building, Calendar, FileText } from 'lucide-react';
 import { api } from '@/lib/axios';
 import { toast } from 'sonner';
-import FileUpload from '@/components/FileUpload';
 
-export default function CreateFormationPage() {
+export default function NewDevisPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     titre: '',
     description: '',
-    duree: 1,
-    niveau: 'DEBUTANT' as 'DEBUTANT' | 'INTERMEDIAIRE' | 'AVANCE',
-    image: '',
+    type: 'CONSTRUCTION' as 'CONSTRUCTION' | 'RENOVATION' | 'AMENAGEMENT' | 'DEMOLITION' | 'AUTRE',
+    adresseChantier: '',
+    dateDebut: '',
+    dateFinEstimee: '',
+    commentaire: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.titre || !formData.description) {
+
+    if (!formData.titre || !formData.description || !formData.adresseChantier) {
       toast.error('Veuillez remplir tous les champs obligatoires');
       return;
     }
@@ -31,37 +32,30 @@ export default function CreateFormationPage() {
     setLoading(true);
 
     try {
-      const response = await api.post('/formations', formData);
-      toast.success('Formation créée avec succès !');
-      router.push(`/dashboard/formations/${response.data.id}`);
+      await api.post('/devis', formData);
+      toast.success('Demande de devis envoyée avec succès !');
+      router.push('/dashboard/devis');
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Erreur lors de la création');
+      toast.error(error.response?.data?.message || 'Erreur lors de l\'envoi');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleImageUpload = (file: any) => {
-    // Construire l'URL complète
-    const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${file.url}`;
-    setFormData({ ...formData, image: imageUrl });
-    toast.success('Image uploadée !');
-  };
-
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
-          href="/dashboard/formations"
+          href="/dashboard/devis"
           className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
         >
           <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Créer une formation</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Nouvelle demande de devis</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Remplissez les informations de base
+            Décrivez votre projet BTP
           </p>
         </div>
       </div>
@@ -71,7 +65,7 @@ export default function CreateFormationPage() {
         {/* Titre */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Titre de la formation *
+            Titre du projet *
           </label>
           <input
             type="text"
@@ -79,99 +73,97 @@ export default function CreateFormationPage() {
             value={formData.titre}
             onChange={(e) => setFormData({ ...formData, titre: e.target.value })}
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            placeholder="Ex: Maçonnerie pour débutants"
+            placeholder="Ex: Rénovation complète appartement 80m²"
           />
+        </div>
+
+        {/* Type de projet */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Type de projet *
+          </label>
+          <select
+            value={formData.type}
+            onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          >
+            <option value="CONSTRUCTION">Construction</option>
+            <option value="RENOVATION">Rénovation</option>
+            <option value="AMENAGEMENT">Aménagement</option>
+            <option value="DEMOLITION">Démolition</option>
+            <option value="AUTRE">Autre</option>
+          </select>
         </div>
 
         {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Description *
+            Description détaillée *
           </label>
           <textarea
             required
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            rows={5}
+            rows={6}
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            placeholder="Décrivez le contenu et les objectifs de la formation..."
+            placeholder="Décrivez votre projet en détail : travaux souhaités, matériaux, contraintes..."
           />
         </div>
 
-        {/* Durée et Niveau */}
+        {/* Adresse du chantier */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Adresse du chantier *
+          </label>
+          <input
+            type="text"
+            required
+            value={formData.adresseChantier}
+            onChange={(e) => setFormData({ ...formData, adresseChantier: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            placeholder="Ex: 15 rue de la République, 75011 Paris"
+          />
+        </div>
+
+        {/* Dates */}
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Durée (en heures) *
+              Date de début souhaitée
             </label>
             <input
-              type="number"
-              required
-              min="1"
-              max="500"
-              value={formData.duree}
-              onChange={(e) => setFormData({ ...formData, duree: parseInt(e.target.value) })}
+              type="date"
+              value={formData.dateDebut}
+              onChange={(e) => setFormData({ ...formData, dateDebut: e.target.value })}
               className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Niveau *
+              Date de fin estimée
             </label>
-            <select
-              value={formData.niveau}
-              onChange={(e) => setFormData({ ...formData, niveau: e.target.value as any })}
+            <input
+              type="date"
+              value={formData.dateFinEstimee}
+              onChange={(e) => setFormData({ ...formData, dateFinEstimee: e.target.value })}
               className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            >
-              <option value="DEBUTANT">Débutant</option>
-              <option value="INTERMEDIAIRE">Intermédiaire</option>
-              <option value="AVANCE">Avancé</option>
-            </select>
+            />
           </div>
         </div>
 
-        {/* Upload Image */}
+        {/* Commentaire */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Image de couverture
+            Commentaires ou demandes spécifiques (optionnel)
           </label>
-          
-          {formData.image ? (
-            <div className="space-y-4">
-              <img
-                src={formData.image}
-                alt="Aperçu"
-                className="w-full h-64 object-cover rounded-lg"
-              />
-              <button
-                type="button"
-                onClick={() => setFormData({ ...formData, image: '' })}
-                className="text-sm text-red-600 hover:text-red-700"
-              >
-                Changer l'image
-              </button>
-            </div>
-          ) : (
-            <FileUpload
-              onUploadSuccess={handleImageUpload}
-              accept="image/*"
-              maxSize={10}
-              className="mb-4"
-            />
-          )}
-          
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            Format accepté : JPG, PNG (max 10MB)
-          </p>
-        </div>
-
-        {/* Info Box */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 flex gap-3">
-          <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-blue-800 dark:text-blue-300">
-            <strong>Note :</strong> La formation sera créée en mode brouillon. Vous pourrez ajouter des modules et des leçons, puis la publier.
-          </div>
+          <textarea
+            value={formData.commentaire}
+            onChange={(e) => setFormData({ ...formData, commentaire: e.target.value })}
+            rows={4}
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            placeholder="Budget maximum, délais, contraintes particulières..."
+          />
         </div>
 
         {/* Actions */}
@@ -181,11 +173,11 @@ export default function CreateFormationPage() {
             disabled={loading}
             className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Save className="h-5 w-5" />
-            {loading ? 'Création...' : 'Créer la formation'}
+            <Send className="h-5 w-5" />
+            {loading ? 'Envoi en cours...' : 'Envoyer la demande'}
           </button>
           <Link
-            href="/dashboard/formations"
+            href="/dashboard/devis"
             className="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
           >
             Annuler

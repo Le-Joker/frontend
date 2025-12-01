@@ -245,28 +245,6 @@ export default function LandingPage() {
                 </li>
               </ul>
             </div>
-
-            {/* Admin Card (visible seulement sur lg+) */}
-            <div className="hidden lg:block group p-4 sm:p-6 md:p-8 bg-gradient-to-br from-red-50 to-orange-50 rounded-xl lg:rounded-2xl hover:shadow-xl transition-all transform hover:-translate-y-1 sm:hover:-translate-y-2">
-              <div className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 bg-red-600 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4 md:mb-6 group-hover:scale-110 transition-transform">
-                <Building2 className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-white" />
-              </div>
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4">Admin</h3>
-              <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm md:text-base text-gray-600">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Gestion complète</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Statistiques avancées</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Modération contenu</span>
-                </li>
-              </ul>
-            </div>
           </div>
         </div>
       </section>

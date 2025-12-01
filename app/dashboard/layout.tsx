@@ -114,7 +114,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex min-h-0 flex-1 flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-colors">
           {/* Logo - Responsive */}
           <div className="flex h-14 lg:h-16 items-center gap-1.5 lg:gap-2 px-4 lg:px-6 border-b border-gray-200 dark:border-gray-700">
-            <Building2 className="h-6 lg:h-7 xl:h-8 w-6 lg:w-7 xl:w-8 text-blue-600" />
+            {/* <Building2 className="h-6 lg:h-7 xl:h-8 w-6 lg:w-7 xl:w-8 text-blue-600" /> */}
             <span className="text-base lg:text-lg xl:text-xl font-bold text-gray-900 dark:text-white">INTELLECT</span>
           </div>
 
@@ -183,7 +183,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="fixed inset-y-0 left-0 flex w-64 sm:w-72 flex-col bg-white dark:bg-gray-800">
             <div className="flex h-14 sm:h-16 items-center justify-between px-4 sm:px-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center gap-2">
-                <Building2 className="h-6 sm:h-7 w-6 sm:w-7 text-blue-600" />
+                {/* <Building2 className="h-6 sm:h-7 w-6 sm:w-7 text-blue-600" /> */}
                 <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">INTELLECT</span>
               </div>
               <button onClick={() => setSidebarOpen(false)} className="text-gray-500 dark:text-gray-400">
@@ -255,7 +255,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
         </button>
         <div className="flex items-center gap-1.5 sm:gap-2">
-          <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+          {/* <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" /> */}
           <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">INTELLECT</span>
         </div>
         <button className="text-gray-500 dark:text-gray-400">
