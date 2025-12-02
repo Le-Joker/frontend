@@ -50,40 +50,33 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
+  setError('');
 
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Les mots de passe ne correspondent pas');
-      return;
+  try {
+    const response = await api.post('/auth/register', {
+      email: formData.email,
+      motDePasse: formData.password, // ✅ motDePasse
+      prenom: formData.prenom,       // ✅ prenom
+      nom: formData.nom,             // ✅ nom
+      telephone: formData.telephone, // ✅ telephone
+      role: formData.role,
+    });
+
+    const { user, token } = response.data;
+    
+    useAuthStore.getState().setUser(user);
+    useAuthStore.getState().setToken(token);
+
+    if (user.role === 'formateur' && !user.testFormateurValide) {
+      router.push('/test-formateur');
+    } else {
+      router.push('/dashboard');
     }
-
-    if (formData.password.length < 6) {
-      toast.error('Le mot de passe doit contenir au moins 6 caractères');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const { confirmPassword, ...dataToSend } = formData;
-      const response = await api.post('/auth/register', dataToSend);
-      const { user, token } = response.data;
-
-      setAuth(user, token);
-      toast.success('Inscription réussie !');
-      
-      if (user.role === 'FORMATEUR') {
-        toast.info('Vous devez passer le test formateur');
-        router.push('/test-formateur');
-      } else {
-        router.push('/dashboard');
-      }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Erreur lors de l\'inscription');
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (err: any) {
+    setError(err.response?.data?.message || 'Erreur lors de l\'inscription');
+  }
+};
 
   const handleGoogleRegister = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;

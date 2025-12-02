@@ -1,29 +1,28 @@
-'use client';
+// frontend/components/Providers.tsx
 
+'use client';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/lib/store/auth-store';
 import { initSocket, disconnectSocket } from '@/lib/socket';
 import Chat from '@/components/Chat';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const { token, isAuthenticated } = useAuthStore();
+  const { user, token } = useAuthStore();
 
   useEffect(() => {
-    if (isAuthenticated && token) {
+    if (user && token) {
       initSocket(token);
-    } else {
-      disconnectSocket();
     }
 
     return () => {
       disconnectSocket();
     };
-  }, [isAuthenticated, token]);
+  }, [user, token]);
 
   return (
     <>
       {children}
-      {isAuthenticated && <Chat />}
+      {user && <Chat />}
     </>
   );
 }
